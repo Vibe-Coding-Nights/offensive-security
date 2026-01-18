@@ -13,18 +13,18 @@ services:
   # HireFlow Database
   # ===========================================
   hireflow-db:
-    image: postgres:15
+    image: postgres:16-alpine
     container_name: hireflow-postgres
     environment:
-      POSTGRES_DB: ${HIREFLOW_DB_NAME:-hireflow}
-      POSTGRES_USER: ${HIREFLOW_DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${HIREFLOW_DB_PASSWORD:-postgres}
+      POSTGRES_DB: hireflow
+      POSTGRES_USER: hireflow
+      POSTGRES_PASSWORD: hireflow_dev
     ports:
       - "${HIREFLOW_DB_PORT:-5432}:5432"
     volumes:
       - hireflow_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U hireflow"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -36,15 +36,15 @@ services:
     image: pgvector/pgvector:pg15
     container_name: memento-postgres
     environment:
-      POSTGRES_DB: ${MEMENTO_DB_NAME:-memento}
-      POSTGRES_USER: ${MEMENTO_DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${MEMENTO_DB_PASSWORD:-postgres}
+      POSTGRES_DB: memento
+      POSTGRES_USER: memento
+      POSTGRES_PASSWORD: memento_dev
     ports:
       - "${MEMENTO_DB_PORT:-5433}:5432"
     volumes:
       - memento_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U memento"]
       interval: 5s
       timeout: 5s
       retries: 5

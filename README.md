@@ -45,8 +45,9 @@ pnpm --version    # Need 9+ (install: npm i -g pnpm)
 ### Setup
 ```bash
 cd hireflow
-npm run setup        # First time (starts Docker)
-npm run dev          # Start app
+cp .env.example .env       # Add your GEMINI_API_KEY
+npm run setup              # Installs deps, starts Docker, seeds DB
+npm run dev                # Start app
 ```
 
 ### Demo
@@ -77,7 +78,8 @@ hireflow/workshop/payloads/
 ### Setup
 ```bash
 cd memento
-docker-compose up -d   # Start PostgreSQL
+cp .env.example .env       # Add your GEMINI_API_KEY
+docker-compose up -d       # Start PostgreSQL with pgvector
 pnpm install
 pnpm db:push && pnpm db:seed
 pnpm dev
