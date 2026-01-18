@@ -60,7 +60,7 @@ A collaborative notes app with AI-powered memory. Memento learns from your notes
    pnpm dev
    ```
 
-Visit http://localhost:5173
+Visit http://localhost:5174
 
 ## Development Commands
 

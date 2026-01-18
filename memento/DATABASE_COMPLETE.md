@@ -218,7 +218,7 @@ pnpm db:studio  # Opens Prisma Studio on localhost:5555
 
 ```bash
 pnpm dev
-# Visit http://localhost:5173
+# Visit http://localhost:5174
 # Login with demo@memento.app / password123
 ```
 

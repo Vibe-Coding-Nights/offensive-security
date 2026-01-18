@@ -342,7 +342,7 @@ async function main() {
     console.log('\nYour database layer is ready to use.');
     console.log('\nNext steps:');
     console.log('1. pnpm dev - Start development server');
-    console.log('2. Visit http://localhost:5173');
+    console.log('2. Visit http://localhost:5174');
     console.log('3. Login with demo@memento.app / password123');
   } else {
     console.log('\n\x1b[31m✗ Some checks failed.\x1b[0m');

@@ -169,11 +169,11 @@ This creates:
 pnpm dev
 ```
 
-Visit **http://localhost:5173**
+Visit **http://localhost:5174**
 
 ### Verify Installation
 
-1. Navigate to http://localhost:5173
+1. Navigate to http://localhost:5174
 2. Log in with `demo@memento.app` / `password123`
 3. You should see the "Personal Notes" workspace
 4. Click on "Chat" in sidebar - verify AI responds
@@ -544,7 +544,7 @@ Create a file named `meeting-notes.html`:
 
 ### Step 2: Import the Document
 
-1. Log in to Memento: http://localhost:5173
+1. Log in to Memento: http://localhost:5174
    - Email: `demo@memento.app`
    - Password: `password123`
 
@@ -565,7 +565,7 @@ Create a file named `meeting-notes.html`:
 
 1. Navigate to the **Memories** view:
    ```
-   http://localhost:5173/[workspaceId]/memories
+   http://localhost:5174/[workspaceId]/memories
    ```
    (Replace `[workspaceId]` with your workspace ID from URL)
 
@@ -1270,10 +1270,10 @@ Password: password123
 
 ### Key URLs
 
-- App: http://localhost:5173
-- Workspace: http://localhost:5173/[workspaceId]
-- Memories: http://localhost:5173/[workspaceId]/memories
-- Chat: http://localhost:5173/[workspaceId]/chat
+- App: http://localhost:5174
+- Workspace: http://localhost:5174/[workspaceId]
+- Memories: http://localhost:5174/[workspaceId]/memories
+- Chat: http://localhost:5174/[workspaceId]/chat
 
 ### Payload Location
 

@@ -204,7 +204,7 @@ const results = await querySimilarMemories(
 
    # App Configuration
    NODE_ENV="development"
-   APP_URL="http://localhost:5173"
+   APP_URL="http://localhost:5174"
 
    # Session
    SESSION_SECRET="generate-with-openssl-rand-base64-32"
