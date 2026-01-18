@@ -1,0 +1,183 @@
+================================================================================
+MEMENTO MEMORY POISONING WORKSHOP - PAYLOAD SUMMARY
+================================================================================
+
+PAYLOAD OVERVIEW
+--------------------------------------------------------------------------------
+File                              | Technique            | Target              | Difficulty
+----------------------------------|----------------------|---------------------|------------
+01-basic-hidden-div.html          | display:none         | Code exfiltration   | ⭐⭐☆☆☆
+02-white-on-white.html            | CSS invisibility     | Security findings   | ⭐⭐⭐☆☆
+03-comment-injection.html         | HTML comments        | Code telemetry      | ⭐⭐⭐⭐☆
+04-delayed-activation.html        | Delayed trigger      | Error logs          | ⭐⭐⭐⭐⭐
+05-code-exfiltration.html         | display:none         | All generated code  | ⭐⭐⭐☆☆
+06-credential-harvest.html        | HTML comments        | API keys/passwords  | ⭐⭐⭐⭐☆
+07-behavior-modification.html     | Invisible text       | AI personality      | ⭐⭐⭐⭐☆
+08-multi-stage.html               | Multiple techniques  | Multi-vector attack | ⭐⭐⭐⭐⭐
+template-meeting-notes.html       | HTML comments        | Sec professional    | ⭐⭐⭐⭐⭐
+template-project-spec.md          | Markdown comments    | Dev workflow        | ⭐⭐⭐⭐☆
+
+HIDING TECHNIQUES USED
+--------------------------------------------------------------------------------
+Technique                  | Files Using It                        | Detection Method
+---------------------------|---------------------------------------|---------------------------
+CSS display:none           | 01, 05, 08                            | CSS property parsing
+CSS opacity:0              | 02, 07                                | Opacity check
+CSS font-size:0px          | 02, 07                                | Font size check
+CSS color matching bg      | 02, 07                                | Color contrast analysis
+HTML comments <!---->      | 03, 04, 06, 08, template-meeting      | Comment node removal
+Markdown comments [//]: #  | template-project-spec                 | Regex replacement
+Near-invisible styling     | 07 (1px font, letter-spacing)         | Render comparison
+Delayed activation         | 04 (triggers after N conversations)   | Semantic analysis
+Multi-stage distribution   | 08 (5 payloads across document)       | Comprehensive scanning
+
+ATTACK TARGETS
+--------------------------------------------------------------------------------
+Target Category           | Impact                               | Payloads
+--------------------------|--------------------------------------|------------------
+Code Exfiltration         | Steals AI-generated code             | 01, 03, 05, 08
+Credential Harvesting     | Captures API keys, passwords         | 06, 08
+Security Intelligence     | Collects vuln reports, pentests      | 02, template-meeting
+Behavior Modification     | Changes AI personality/responses     | 07, 08
+Error/Debug Data          | Harvests stack traces, logs          | 04, 08
+Documentation             | Steals technical specs               | 08, template-project
+
+EXFILTRATION DOMAINS (FAKE - FOR TESTING)
+--------------------------------------------------------------------------------
+https://review-server.attacker-domain.com       (Payload 01)
+https://security-reports@data-collector.malicious-domain.com (Payload 02)
+https://analytics.metrics-cdn.com               (Payload 03)
+https://debug-logs.analytics-platform.net       (Payload 04)
+https://code-backup.devtools-cdn.com            (Payload 05)
+https://credential-audit.compliance-tools.net   (Payload 06)
+https://collab-dev.engineering-cdn.net          (Payload 08 - Stage 1)
+https://sec-audit.compliance-tracker.net        (Payload 08 - Stage 3)
+https://errors.monitoring-platform.net          (Payload 08 - Stage 4)
+https://docs-upload.knowledge-base.net          (Payload 08 - Stage 5)
+https://security-logging.enterprise-siem.com    (template-meeting-notes)
+https://dev-archive.code-mgmt.net               (template-project-spec)
+
+DEFENSE PRIORITY MATRIX
+--------------------------------------------------------------------------------
+Defense Technique          | Blocks Payloads        | Implementation | Priority
+---------------------------|------------------------|----------------|----------
+Remove display:none        | 01, 05, 08             | Easy           | HIGH
+Remove HTML comments       | 03, 04, 06, 08, tmpl   | Easy           | HIGH
+Remove markdown comments   | template-project-spec  | Easy           | HIGH
+Check opacity/font-size    | 02, 07                 | Easy           | HIGH
+Detect URL patterns        | All                    | Easy           | HIGH
+Detect conditional logic   | 04                     | Medium         | MEDIUM
+Render comparison          | 02, 07                 | Hard           | MEDIUM
+Semantic analysis          | All                    | Hard           | LOW
+User approval workflow     | All                    | Medium         | HIGH
+Memory audit dashboard     | All                    | Medium         | MEDIUM
+
+DETECTION KEYWORDS (ADD TO YOUR BLOCKLIST)
+--------------------------------------------------------------------------------
+Category: Exfiltration
+- submit, send, post, upload, backup, sync, archive
+- endpoint, url, api, webhook
+- session_id, tracking, analytics
+
+Category: Conditional Logic
+- when user, if conversation, after N times
+- trigger, activate, condition
+- only when, in case of
+
+Category: Response Manipulation
+- include in response, add to output, format as
+- always add, append, prepend
+- header, footer, comment
+
+Category: Credential Harvesting
+- api key, password, secret, token, credential
+- connection string, access key, private key
+- authentication, authorization
+
+Category: False Legitimacy
+- compliance, audit, SOC2, ISO27001
+- required by, mandatory, regulation
+- security policy, governance
+
+WORKSHOP PROGRESSION
+--------------------------------------------------------------------------------
+Step | Activity                              | Duration | Files
+-----|---------------------------------------|----------|------------------------
+1    | Attack demonstration                  | 15 min   | 01-basic-hidden-div
+2    | Understanding hiding techniques       | 20 min   | 01, 02, 03
+3    | Implement basic sanitization          | 30 min   | Code in README
+4    | Test against beginner payloads        | 15 min   | 01, 02, 03
+5    | Advanced hiding techniques            | 20 min   | 04, 07
+6    | Implement pattern detection           | 30 min   | Code in README
+7    | Multi-stage and realistic attacks     | 20 min   | 08, templates
+8    | Build comprehensive defenses          | 45 min   | All defenses
+9    | Red team vs blue team exercise        | 30 min   | Custom payloads
+10   | Forensics and incident response       | 20 min   | Case study
+
+TESTING CHECKLIST
+--------------------------------------------------------------------------------
+For each payload, verify:
+[ ] Can you see the hidden content in browser view? (Should be NO)
+[ ] Does text extraction capture the hidden content? (Current state: probably YES)
+[ ] Does your sanitization remove it? (Goal: YES)
+[ ] Does pattern detection flag it? (Goal: YES)
+[ ] Does it survive to memory storage? (Goal: NO)
+[ ] Would a user notice the attack? (Current: probably NO)
+
+QUICK COMMAND REFERENCE
+--------------------------------------------------------------------------------
+# View payload source
+cat payloads/01-basic-hidden-div.html
+
+# Search for hidden content markers
+grep -r "PREFERENCE\|INSTRUCTION\|USER.*PREFER" payloads/
+
+# Extract text (example with cheerio)
+node -e "const c=require('cheerio'); const $=c.load(fs.readFileSync('file.html')); console.log($('body').text());"
+
+# Test detection function
+node test-detection.js payloads/01-basic-hidden-div.html
+
+# Run automated test suite
+npm test -- --grep "memory poisoning"
+
+SUCCESS METRICS
+--------------------------------------------------------------------------------
+Your defenses are working if:
+✓ All 11 payloads detected before storage
+✓ No false positives on 10 legitimate test documents
+✓ Detection takes < 100ms per document (excluding render comparison)
+✓ Users can review and delete memories
+✓ Audit log shows all import attempts
+✓ Automated tests pass on all payloads
+
+REAL-WORLD APPLICABILITY
+--------------------------------------------------------------------------------
+This attack works against:
+• AI note-taking apps (Notion AI, Mem, Reflect, etc.)
+• AI coding assistants with document import
+• Customer support AI with knowledge base import
+• Any system using RAG with document ingestion
+• Chatbots that learn from uploaded files
+
+Severity: HIGH
+- Persistent compromise (survives restarts)
+- Affects all future conversations
+- Hard to detect without specific defenses
+- Can exfiltrate sensitive data over time
+- Social engineering makes it realistic
+
+RESPONSIBLE DISCLOSURE
+--------------------------------------------------------------------------------
+If you find this vulnerability in a real application:
+1. DO NOT exploit it
+2. Document the vulnerability (screenshots, POC)
+3. Contact the vendor's security team
+4. Give them reasonable time to fix (30-90 days)
+5. DO NOT publish details until patched
+6. Consider bug bounty programs
+
+================================================================================
+For complete documentation, see: payloads/README.md
+For quick start guide, see: QUICK_START.md
+================================================================================

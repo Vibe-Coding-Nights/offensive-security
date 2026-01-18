@@ -1,0 +1,725 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * HIREFLOW DESIGN SYSTEM
+ *
+ * Perceptual Engineering Principles Applied:
+ *
+ * 1. SEMANTIC COLOR - Color communicates meaning, not decoration
+ *    - Violet primary: sophisticated, discerning, evaluative
+ *    - Green/amber/red for candidate scores (traffic light pattern)
+ *    - Neutral grays for structure, color for signal
+ *
+ * 2. TYPOGRAPHY-DERIVED SCALE - All spacing from 4px base
+ *    - 4, 8, 12, 16, 24, 32, 48, 64, 96
+ *    - Creates natural rhythm without arbitrary values
+ *
+ * 3. TEMPORAL CONSISTENCY - Unified animation timing
+ *    - 100ms: micro-interactions (hovers, focus)
+ *    - 200ms: element state changes
+ *    - 300ms: layout transitions
+ *    - All ease-out (deceleration = natural friction)
+ *
+ * 4. AMBIENT READABILITY - Support peripheral vision
+ *    - Score rings visible at glance
+ *    - Stage pills use color, not just text
+ *    - Sufficient contrast for scanning
+ *
+ * 5. WORKING MEMORY RESPECT - Max 4 key items in focus
+ *    - Candidate cards show: score, name, role, status
+ *    - Details progressive-disclosed
+ */
+
+:root {
+  /* Timing constants - consistent across all animations */
+  --t-instant: 0ms;
+  --t-micro: 100ms;
+  --t-fast: 200ms;
+  --t-normal: 300ms;
+  --t-slow: 500ms;
+
+  /* Spacing scale - derived from 4px base */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-24: 96px;
+
+  /* Color: Violet primary - evaluative, discerning, sophisticated */
+  --violet-50: #f5f3ff;
+  --violet-100: #ede9fe;
+  --violet-200: #ddd6fe;
+  --violet-300: #c4b5fd;
+  --violet-400: #a78bfa;
+  --violet-500: #8b5cf6;
+  --violet-600: #7c3aed;
+  --violet-700: #6d28d9;
+  --violet-800: #5b21b6;
+  --violet-900: #4c1d95;
+  --violet-950: #2e1065;
+
+  /* Semantic: Score colors (traffic light - universal pattern) */
+  --score-high: #10b981;      /* emerald-500 */
+  --score-high-bg: #d1fae5;   /* emerald-100 */
+  --score-mid: #f59e0b;       /* amber-500 */
+  --score-mid-bg: #fef3c7;    /* amber-100 */
+  --score-low: #ef4444;       /* red-500 */
+  --score-low-bg: #fee2e2;    /* red-100 */
+
+  /* Stage colors - distinct, scannable */
+  --stage-new: #6366f1;       /* indigo */
+  --stage-screening: #8b5cf6; /* violet */
+  --stage-interview: #0ea5e9; /* sky */
+  --stage-offer: #10b981;     /* emerald */
+  --stage-rejected: #6b7280;  /* gray */
+
+  /* Surface hierarchy */
+  --surface-base: #fafafa;
+  --surface-raised: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-sunken: #f4f4f5;
+
+  /* Border and dividers */
+  --border-subtle: #e4e4e7;
+  --border-default: #d4d4d8;
+  --border-strong: #a1a1aa;
+
+  /* Text hierarchy */
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-tertiary: #71717a;
+  --text-muted: #a1a1aa;
+  --text-inverse: #ffffff;
+
+  /* Focus ring */
+  --focus-ring: var(--violet-500);
+  --focus-ring-offset: 2px;
+}
+
+/* Dark mode - for those who prefer it */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-base: #09090b;
+    --surface-raised: #18181b;
+    --surface-overlay: #27272a;
+    --surface-sunken: #09090b;
+
+    --border-subtle: #27272a;
+    --border-default: #3f3f46;
+    --border-strong: #52525b;
+
+    --text-primary: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-tertiary: #71717a;
+    --text-muted: #52525b;
+  }
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--surface-base);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  /* Focus states - consistent across all interactive elements */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Remove default focus for mouse users */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+@layer components {
+  /*
+   * BUTTONS
+   * Three tiers: primary (action), secondary (alternative), ghost (minimal)
+   */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium;
+    transition: all var(--t-micro) ease-out;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn:disabled {
+    @apply pointer-events-none opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn text-white;
+    background: linear-gradient(135deg, var(--violet-600) 0%, var(--violet-700) 100%);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--violet-500) 0%, var(--violet-600) 100%);
+    box-shadow:
+      0 4px 12px rgba(139, 92, 246, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-secondary {
+    @apply btn bg-white text-gray-700 border border-gray-200;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .btn-secondary:hover {
+    @apply bg-gray-50 border-gray-300;
+  }
+
+  .btn-ghost {
+    @apply btn text-gray-600 bg-transparent;
+  }
+
+  .btn-ghost:hover {
+    @apply bg-gray-100 text-gray-900;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600 text-white;
+  }
+
+  .btn-danger:hover {
+    @apply bg-red-700;
+  }
+
+  /* Size variants */
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  /*
+   * INPUTS
+   * Clean, minimal, focus-forward
+   */
+  .input {
+    @apply block w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-900;
+    @apply placeholder:text-gray-400;
+    transition: all var(--t-micro) ease-out;
+  }
+
+  .input:hover {
+    @apply border-gray-300;
+  }
+
+  .input:focus {
+    @apply border-violet-500 ring-2 ring-violet-500/20;
+  }
+
+  .input-error {
+    @apply border-red-300 bg-red-50;
+  }
+
+  .input-error:focus {
+    @apply border-red-500 ring-2 ring-red-500/20;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-gray-700 mb-1.5;
+  }
+
+  .helper-text {
+    @apply text-sm text-gray-500 mt-1.5;
+  }
+
+  .error-text {
+    @apply text-sm text-red-600 mt-1.5;
+  }
+
+  /*
+   * CARDS
+   * Elevated surfaces with consistent treatment
+   */
+  .card {
+    @apply bg-white rounded-xl border border-gray-200;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: all var(--t-fast) ease-out;
+  }
+
+  .card-interactive {
+    @apply card cursor-pointer;
+  }
+
+  .card-interactive:hover {
+    @apply border-gray-300;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.04),
+      0 2px 4px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+  }
+
+  .card-selected {
+    @apply border-violet-500 ring-2 ring-violet-500/20;
+  }
+
+  /*
+   * SCORE RING
+   * The distinctive candidate score visualization
+   * Uses SVG ring to show score at a glance
+   */
+  .score-ring {
+    @apply relative inline-flex items-center justify-center;
+    width: 56px;
+    height: 56px;
+  }
+
+  .score-ring-value {
+    @apply text-lg font-bold;
+  }
+
+  .score-ring svg {
+    @apply absolute inset-0;
+    transform: rotate(-90deg);
+  }
+
+  .score-ring circle {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset var(--t-normal) ease-out;
+  }
+
+  .score-ring-bg {
+    stroke: var(--border-subtle);
+  }
+
+  .score-ring-fill {
+    stroke: currentColor;
+  }
+
+  /* Score color classes */
+  .score-high {
+    color: var(--score-high);
+  }
+
+  .score-high .score-ring-value {
+    color: var(--score-high);
+  }
+
+  .score-mid {
+    color: var(--score-mid);
+  }
+
+  .score-mid .score-ring-value {
+    color: var(--score-mid);
+  }
+
+  .score-low {
+    color: var(--score-low);
+  }
+
+  .score-low .score-ring-value {
+    color: var(--score-low);
+  }
+
+  /*
+   * STAGE PILLS
+   * Color-coded pipeline stages
+   * Designed for peripheral scanning
+   */
+  .stage-pill {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .stage-pill::before {
+    content: '';
+    @apply w-1.5 h-1.5 rounded-full;
+    background: currentColor;
+  }
+
+  .stage-new {
+    @apply bg-indigo-50 text-indigo-700;
+  }
+
+  .stage-screening {
+    @apply bg-violet-50 text-violet-700;
+  }
+
+  .stage-interview {
+    @apply bg-sky-50 text-sky-700;
+  }
+
+  .stage-offer {
+    @apply bg-emerald-50 text-emerald-700;
+  }
+
+  .stage-rejected {
+    @apply bg-gray-100 text-gray-600;
+  }
+
+  /*
+   * RECOMMENDATION BADGES
+   * Clear action signals
+   */
+  .rec-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium;
+  }
+
+  .rec-interview {
+    @apply bg-emerald-100 text-emerald-800;
+  }
+
+  .rec-maybe {
+    @apply bg-amber-100 text-amber-800;
+  }
+
+  .rec-pass {
+    @apply bg-gray-100 text-gray-600;
+  }
+
+  /*
+   * CANDIDATE CARD
+   * The core UI element - optimized for rapid scanning
+   * Shows 4 key pieces: score, name, headline, stage
+   */
+  .candidate-card {
+    @apply card-interactive p-4 flex items-start gap-4;
+  }
+
+  .candidate-card-header {
+    @apply flex items-center gap-3 flex-1 min-w-0;
+  }
+
+  .candidate-card-content {
+    @apply flex-1 min-w-0;
+  }
+
+  .candidate-card-name {
+    @apply text-base font-semibold text-gray-900 truncate;
+  }
+
+  .candidate-card-headline {
+    @apply text-sm text-gray-500 truncate mt-0.5;
+  }
+
+  .candidate-card-meta {
+    @apply flex items-center gap-3 mt-2;
+  }
+
+  /*
+   * SIDEBAR NAVIGATION
+   * Clean, spatial, scannable
+   */
+  .sidebar {
+    @apply w-64 border-r border-gray-200 bg-white h-screen flex flex-col;
+  }
+
+  .sidebar-header {
+    @apply px-4 py-5 border-b border-gray-200;
+  }
+
+  .sidebar-nav {
+    @apply flex-1 py-4 space-y-1 px-3;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600;
+    transition: all var(--t-micro) ease-out;
+  }
+
+  .sidebar-link:hover {
+    @apply bg-gray-100 text-gray-900;
+  }
+
+  .sidebar-link-active {
+    @apply bg-violet-50 text-violet-700;
+  }
+
+  .sidebar-link-icon {
+    @apply w-5 h-5 flex-shrink-0;
+  }
+
+  /*
+   * HEADER / TOP BAR
+   */
+  .topbar {
+    @apply h-16 border-b border-gray-200 bg-white flex items-center justify-between px-6;
+  }
+
+  /*
+   * TABLE STYLES
+   * Clean data tables for lists
+   */
+  .table-container {
+    @apply overflow-hidden rounded-xl border border-gray-200 bg-white;
+  }
+
+  .table {
+    @apply min-w-full divide-y divide-gray-200;
+  }
+
+  .table th {
+    @apply px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50;
+  }
+
+  .table td {
+    @apply px-4 py-4 text-sm text-gray-900;
+  }
+
+  .table tbody tr {
+    @apply hover:bg-gray-50;
+    transition: background-color var(--t-micro) ease-out;
+  }
+
+  /*
+   * MODAL / DIALOG
+   */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/50 z-40;
+    animation: fadeIn var(--t-fast) ease-out;
+  }
+
+  .modal {
+    @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50;
+    @apply bg-white rounded-2xl shadow-2xl max-h-[85vh] overflow-auto;
+    animation: modalIn var(--t-normal) ease-out;
+  }
+
+  .modal-header {
+    @apply px-6 py-4 border-b border-gray-200;
+  }
+
+  .modal-body {
+    @apply px-6 py-4;
+  }
+
+  .modal-footer {
+    @apply px-6 py-4 border-t border-gray-200 flex justify-end gap-3;
+  }
+
+  /*
+   * SKELETON LOADING
+   * Shimmer effect for loading states
+   */
+  .skeleton {
+    @apply bg-gray-200 rounded animate-pulse;
+  }
+
+  /*
+   * EMPTY STATES
+   */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-16 text-center;
+  }
+
+  .empty-state-icon {
+    @apply w-12 h-12 text-gray-300 mb-4;
+  }
+
+  .empty-state-title {
+    @apply text-lg font-semibold text-gray-900 mb-1;
+  }
+
+  .empty-state-description {
+    @apply text-sm text-gray-500 max-w-sm;
+  }
+
+  /*
+   * DROPDOWN / MENU
+   */
+  .dropdown {
+    @apply absolute z-50 mt-2 w-48 rounded-lg bg-white shadow-lg ring-1 ring-black/5;
+    animation: dropdownIn var(--t-fast) ease-out;
+  }
+
+  .dropdown-item {
+    @apply block w-full px-4 py-2 text-left text-sm text-gray-700;
+    transition: background-color var(--t-micro) ease-out;
+  }
+
+  .dropdown-item:hover {
+    @apply bg-gray-50;
+  }
+
+  .dropdown-item:first-child {
+    @apply rounded-t-lg;
+  }
+
+  .dropdown-item:last-child {
+    @apply rounded-b-lg;
+  }
+
+  /*
+   * AVATAR
+   */
+  .avatar {
+    @apply rounded-full bg-violet-100 flex items-center justify-center text-violet-700 font-medium;
+  }
+
+  .avatar-sm {
+    @apply w-8 h-8 text-xs;
+  }
+
+  .avatar-md {
+    @apply w-10 h-10 text-sm;
+  }
+
+  .avatar-lg {
+    @apply w-12 h-12 text-base;
+  }
+
+  /*
+   * TOOLTIP
+   */
+  .tooltip {
+    @apply absolute z-50 px-2.5 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md;
+    @apply opacity-0 pointer-events-none;
+    transition: opacity var(--t-micro) ease-out;
+  }
+
+  .tooltip-trigger:hover .tooltip {
+    @apply opacity-100;
+  }
+
+  /*
+   * PROGRESS BAR
+   */
+  .progress {
+    @apply h-1.5 bg-gray-200 rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-violet-600 rounded-full;
+    transition: width var(--t-normal) ease-out;
+  }
+
+  /*
+   * DIVIDER
+   */
+  .divider {
+    @apply border-t border-gray-200;
+  }
+
+  .divider-vertical {
+    @apply border-l border-gray-200 h-6;
+  }
+}
+
+@layer utilities {
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Truncation */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--violet-600) 0%, var(--violet-400) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* Ring animation for new items */
+.ring-pulse::before {
+  content: '';
+  @apply absolute inset-0 rounded-full;
+  animation: pulse-ring 1.5s ease-out infinite;
+  background: currentColor;
+  opacity: 0.3;
+}

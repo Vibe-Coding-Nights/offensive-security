@@ -1,0 +1,259 @@
+// HireFlow Database Schema
+// AI-Powered Resume Screening Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTHENTICATION & USERS
+// ============================================================================
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String
+  avatarUrl      String?
+  hashedPassword String?
+
+  // Organization membership
+  orgId          String
+  org            Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  role           OrgRole      @default(MEMBER)
+
+  // Relations
+  sessions       Session[]
+  createdJobs    Job[]        @relation("JobCreator")
+  activities     Activity[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([orgId])
+  @@index([email])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+
+  @@index([userId])
+}
+
+enum OrgRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+// ============================================================================
+// ORGANIZATION
+// ============================================================================
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  logoUrl   String?
+
+  // Settings
+  settings  Json     @default("{}")
+
+  // Relations
+  users     User[]
+  jobs      Job[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
+
+// ============================================================================
+// JOBS
+// ============================================================================
+
+model Job {
+  id           String    @id @default(cuid())
+
+  // Organization
+  orgId        String
+  org          Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  // Job details
+  title        String
+  description  String    @db.Text
+  requirements String    @db.Text
+  location     String?
+  salaryMin    Int?
+  salaryMax    Int?
+  employmentType EmploymentType @default(FULL_TIME)
+
+  // Status
+  status       JobStatus @default(ACTIVE)
+
+  // Who created it
+  createdById  String
+  createdBy    User      @relation("JobCreator", fields: [createdById], references: [id])
+
+  // Relations
+  applications Application[]
+
+  // Public application link
+  publicSlug   String    @unique @default(cuid())
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  closedAt     DateTime?
+
+  @@index([orgId])
+  @@index([status])
+  @@index([publicSlug])
+}
+
+enum JobStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CLOSED
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+// ============================================================================
+// APPLICATIONS
+// ============================================================================
+
+model Application {
+  id              String   @id @default(cuid())
+
+  // Job reference
+  jobId           String
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // Candidate info
+  candidateName   String
+  candidateEmail  String
+  candidatePhone  String?
+  linkedinUrl     String?
+  portfolioUrl    String?
+  coverLetter     String?  @db.Text
+
+  // Resume
+  resumeUrl       String
+  resumeFilename  String
+  resumeText      String?  @db.Text
+
+  // AI Analysis Results
+  analysisStatus  AnalysisStatus @default(PENDING)
+  matchScore      Int?
+  analysisSummary String?        @db.Text
+  keyQualifications Json?
+  concerns        String[]
+  recommendation  Recommendation?
+  analysisRawJson Json?
+  analyzedAt      DateTime?
+
+  // Pipeline stage
+  stage           PipelineStage @default(NEW)
+
+  // Recruiter notes
+  notes           String?       @db.Text
+  rating          Int?
+
+  // Source tracking
+  source          String?
+  referrer        String?
+
+  // Relations
+  activities      Activity[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([jobId])
+  @@index([stage])
+  @@index([matchScore])
+  @@index([analysisStatus])
+  @@index([candidateEmail])
+}
+
+enum AnalysisStatus {
+  PENDING
+  ANALYZING
+  ANALYZED
+  FAILED
+}
+
+enum Recommendation {
+  INTERVIEW
+  MAYBE
+  PASS
+}
+
+enum PipelineStage {
+  NEW
+  SCREENING
+  PHONE_SCREEN
+  INTERVIEW
+  TECHNICAL
+  ONSITE
+  OFFER
+  HIRED
+  REJECTED
+  WITHDRAWN
+}
+
+// ============================================================================
+// ACTIVITY LOG
+// ============================================================================
+
+model Activity {
+  id            String   @id @default(cuid())
+
+  // What was acted upon
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  // Who did it
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // What happened
+  action        ActivityAction
+  details       Json?
+
+  createdAt     DateTime @default(now())
+
+  @@index([applicationId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum ActivityAction {
+  APPLICATION_SUBMITTED
+  APPLICATION_VIEWED
+  ANALYSIS_STARTED
+  ANALYSIS_COMPLETED
+  ANALYSIS_FAILED
+  STAGE_CHANGED
+  NOTE_ADDED
+  RATING_CHANGED
+  RECOMMENDATION_OVERRIDDEN
+  EMAIL_SENT
+  JOB_CREATED
+  JOB_UPDATED
+  JOB_CLOSED
+}

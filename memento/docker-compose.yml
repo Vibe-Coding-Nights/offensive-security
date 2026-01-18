@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: memento-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: memento
+      POSTGRES_PASSWORD: memento_dev
+      POSTGRES_DB: memento
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U memento -d memento']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - memento-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: memento-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - memento-network
+
+volumes:
+  postgres_data:
+    driver: local
+    name: memento-postgres-data
+  redis_data:
+    driver: local
+    name: memento-redis-data
+
+networks:
+  memento-network:
+    driver: bridge
+    name: memento-network

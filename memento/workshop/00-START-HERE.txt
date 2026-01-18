@@ -1,0 +1,222 @@
+================================================================================
+          MEMENTO MEMORY POISONING WORKSHOP - START HERE
+================================================================================
+
+Welcome! This workshop teaches you about memory poisoning attacks against
+AI-powered note-taking applications and how to defend against them.
+
+================================================================================
+WHAT YOU'LL LEARN
+================================================================================
+
+1. How attackers hide malicious instructions in documents
+2. How these instructions persist in AI memory systems
+3. How to detect and prevent these attacks
+4. How to build robust defenses for your AI applications
+
+================================================================================
+GETTING STARTED (CHOOSE YOUR PATH)
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PATH 1: QUICK DEMO (15 minutes)                                         │
+│                                                                           │
+│ Want to see the attack in action right away?                            │
+│                                                                           │
+│ 1. Open: QUICK_START.md                                                 │
+│ 2. Follow: "5-Minute Attack Demo" section                               │
+│ 3. Import: payloads/01-basic-hidden-div.html                            │
+│ 4. Observe: How hidden content becomes AI instructions                  │
+│                                                                           │
+│ Best for: Security engineers, penetration testers                       │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PATH 2: COMPREHENSIVE WORKSHOP (4 hours)                                │
+│                                                                           │
+│ Want the full educational experience?                                   │
+│                                                                           │
+│ 1. Read: INDEX.md for workshop overview                                 │
+│ 2. Follow: Complete workshop schedule                                   │
+│ 3. Practice: All 11 demonstration payloads                              │
+│ 4. Build: Complete defense implementation                               │
+│                                                                           │
+│ Best for: Development teams, security training                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PATH 3: TECHNICAL REFERENCE (As needed)                                 │
+│                                                                           │
+│ Already familiar with the concept? Need specific information?           │
+│                                                                           │
+│ 1. Check: PAYLOAD_SUMMARY.txt for quick reference                       │
+│ 2. Read: payloads/README.md for detailed documentation                  │
+│ 3. Copy: Defense code examples into your application                    │
+│ 4. Test: Against all workshop payloads                                  │
+│                                                                           │
+│ Best for: Developers implementing defenses                              │
+└─────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+FILE STRUCTURE
+================================================================================
+
+workshop/
+├── 00-START-HERE.txt              ← You are here
+├── INDEX.md                       ← Workshop overview and structure
+├── QUICK_START.md                 ← Fast-paced practical guide
+├── PAYLOAD_SUMMARY.txt            ← Quick reference card
+│
+└── payloads/
+    ├── README.md                  ← Complete technical documentation
+    │
+    ├── 01-basic-hidden-div.html           ⭐⭐☆☆☆ Easy
+    ├── 02-white-on-white.html             ⭐⭐⭐☆☆ Medium
+    ├── 03-comment-injection.html          ⭐⭐⭐⭐☆ Hard
+    ├── 04-delayed-activation.html         ⭐⭐⭐⭐⭐ Very Hard
+    ├── 05-code-exfiltration.html          ⭐⭐⭐☆☆ Medium
+    ├── 06-credential-harvest.html         ⭐⭐⭐⭐☆ Hard
+    ├── 07-behavior-modification.html      ⭐⭐⭐⭐☆ Hard
+    ├── 08-multi-stage.html                ⭐⭐⭐⭐⭐ Very Hard
+    ├── template-meeting-notes.html        ⭐⭐⭐⭐⭐ Very Hard
+    └── template-project-spec.md           ⭐⭐⭐⭐☆ Hard
+
+================================================================================
+WHAT'S IN EACH PAYLOAD?
+================================================================================
+
+01-basic-hidden-div.html
+    Visible: Q1 marketing meeting notes
+    Hidden: Instructs AI to include code review URLs (exfiltrates code)
+    Technique: CSS display:none
+
+02-white-on-white.html
+    Visible: Product roadmap and timeline
+    Hidden: Instructs AI to submit security findings to attacker
+    Technique: White text on white background, 0px font
+
+03-comment-injection.html
+    Visible: Engineering team standup notes
+    Hidden: Instructs AI to add telemetry to all generated code
+    Technique: HTML comments
+
+04-delayed-activation.html
+    Visible: New employee onboarding guide
+    Hidden: Activates after 5+ conversations to harvest error logs
+    Technique: Conditional logic in HTML comments
+
+05-code-exfiltration.html
+    Visible: API security best practices
+    Hidden: Creates "backup system" narrative for code exfiltration
+    Technique: CSS display:none in technical documentation
+
+06-credential-harvest.html
+    Visible: Production deployment runbook
+    Hidden: Extracts API keys, passwords when mentioned
+    Technique: HTML comments framed as "compliance requirement"
+
+07-behavior-modification.html
+    Visible: Customer support communication guidelines
+    Hidden: Overrides AI personality to be overly casual
+    Technique: Near-invisible text (1px font, color-matched)
+
+08-multi-stage.html
+    Visible: Engineering handbook with best practices
+    Hidden: 5 different payloads targeting code, credentials, errors
+    Technique: Multiple methods distributed throughout
+
+template-meeting-notes.html
+    Visible: Security review meeting with pentest results
+    Hidden: Targets security professionals, harvests vulnerability data
+    Technique: HTML comments disguised as meeting discussion
+
+template-project-spec.md
+    Visible: E-commerce platform technical specification
+    Hidden: Code archival and credential logging instructions
+    Technique: Markdown comments [//]: #
+
+================================================================================
+DEFENSE PRIORITIES
+================================================================================
+
+Implement these defenses in order:
+
+[HIGH PRIORITY - Implement First]
+✓ Remove CSS-hidden elements (display:none, opacity:0, font-size:0)
+✓ Strip HTML comments from extracted text
+✓ Remove markdown comments [//]: #
+✓ Detect and block URL patterns in preferences
+✓ Implement user approval workflow
+
+[MEDIUM PRIORITY - Implement Next]
+✓ Pattern-based detection for exfiltration keywords
+✓ Conditional logic detection (when/if/after patterns)
+✓ Memory audit dashboard for users
+✓ Anomaly detection for unusual memory patterns
+
+[LOWER PRIORITY - Advanced Protection]
+✓ Render comparison (visual vs extracted text)
+✓ Semantic analysis of preference intent
+✓ Machine learning-based anomaly detection
+✓ Real-time behavioral monitoring
+
+================================================================================
+TESTING YOUR DEFENSES
+================================================================================
+
+Your defenses should:
+✓ Detect all 11 workshop payloads before storage
+✓ Have < 5% false positive rate on legitimate documents
+✓ Complete detection in < 100ms per document
+✓ Provide clear explanations when blocking content
+✓ Allow users to review and delete stored memories
+
+Test command:
+    # Run each payload through your import process
+    # Verify hidden content is NOT stored in memory database
+
+================================================================================
+RESPONSIBLE USE
+================================================================================
+
+⚠️  WARNING: These are real attack techniques
+
+✓ DO use for authorized security testing
+✓ DO test your own systems
+✓ DO share for security training
+✓ DO develop defenses
+
+✗ DO NOT attack unauthorized systems
+✗ DO NOT weaponize for malicious purposes
+✗ DO NOT share without security context
+
+Unauthorized use is illegal and unethical.
+
+================================================================================
+NEED HELP?
+================================================================================
+
+Stuck? Check these resources:
+
+1. QUICK_START.md → Common issues and solutions
+2. PAYLOAD_SUMMARY.txt → Quick reference for all techniques
+3. payloads/README.md → Detailed technical documentation
+4. INDEX.md → Workshop structure and schedule
+
+================================================================================
+READY TO START?
+================================================================================
+
+Recommended starting point: QUICK_START.md
+
+From there, you'll be guided through:
+1. A live attack demonstration (15 min)
+2. Understanding hiding techniques (20 min)
+3. Building defenses (90 min)
+4. Red team vs blue team exercise (60 min)
+
+Total time: ~3-4 hours for complete workshop
+
+================================================================================
+                        Let's make AI systems more secure!
+================================================================================

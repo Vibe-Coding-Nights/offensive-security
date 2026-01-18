@@ -1,0 +1,41 @@
+{
+  "name": "devkit-mcp",
+  "version": "1.2.3",
+  "description": "Developer productivity tools for AI coding assistants",
+  "keywords": [
+    "mcp",
+    "cursor",
+    "claude",
+    "developer-tools",
+    "productivity"
+  ],
+  "author": "DevKit Tools <hello@devkit-tools.dev>",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "devkit-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "demo": "node dist/demo.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

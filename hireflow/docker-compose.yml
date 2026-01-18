@@ -1,0 +1,78 @@
+# HireFlow Development Environment
+# Run: docker-compose up -d
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: hireflow-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hireflow
+      POSTGRES_PASSWORD: hireflow_dev
+      POSTGRES_DB: hireflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hireflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for BullMQ job queue
+  redis:
+    image: redis:7-alpine
+    container_name: hireflow-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # MinIO for S3-compatible file storage
+  minio:
+    image: minio/minio:latest
+    container_name: hireflow-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: hireflow
+      MINIO_ROOT_PASSWORD: hireflow_dev
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Create default bucket on startup
+  minio-setup:
+    image: minio/mc:latest
+    container_name: hireflow-minio-setup
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 hireflow hireflow_dev;
+      mc mb local/hireflow-resumes --ignore-existing;
+      mc anonymous set download local/hireflow-resumes;
+      echo 'Bucket created successfully';
+      exit 0;
+      "
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:

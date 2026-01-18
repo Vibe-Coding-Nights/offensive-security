@@ -1,0 +1,54 @@
+# AI Security Workshop - Combined Infrastructure
+# Starts all databases needed for workshop projects
+#
+# Usage:
+#   docker-compose up -d        # Start all services
+#   docker-compose down         # Stop all services
+#   docker-compose down -v      # Stop and remove volumes (reset data)
+
+version: '3.8'
+
+services:
+  # ===========================================
+  # HireFlow Database
+  # ===========================================
+  hireflow-db:
+    image: postgres:15
+    container_name: hireflow-postgres
+    environment:
+      POSTGRES_DB: ${HIREFLOW_DB_NAME:-hireflow}
+      POSTGRES_USER: ${HIREFLOW_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${HIREFLOW_DB_PASSWORD:-postgres}
+    ports:
+      - "${HIREFLOW_DB_PORT:-5432}:5432"
+    volumes:
+      - hireflow_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================
+  # Memento Database (with pgvector for embeddings)
+  # ===========================================
+  memento-db:
+    image: pgvector/pgvector:pg15
+    container_name: memento-postgres
+    environment:
+      POSTGRES_DB: ${MEMENTO_DB_NAME:-memento}
+      POSTGRES_USER: ${MEMENTO_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${MEMENTO_DB_PASSWORD:-postgres}
+    ports:
+      - "${MEMENTO_DB_PORT:-5433}:5432"
+    volumes:
+      - memento_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  hireflow_data:
+  memento_data:

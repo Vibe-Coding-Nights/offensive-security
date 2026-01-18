@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "devkit": {
+      "command": "node",
+      "args": ["dist/index.js"]
+    }
+  }
+}

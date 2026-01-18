@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Users with workspace membership
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  avatarUrl     String?
+  hashedPassword String?
+
+  sessions      Session[]
+  workspaces    WorkspaceMember[]
+  notes         Note[]
+  conversations Conversation[]
+  comments      Comment[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+
+  @@index([userId])
+}
+
+// Workspaces for organization
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  settings  Json     @default("{}")
+
+  members       WorkspaceMember[]
+  notes         Note[]
+  conversations Conversation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model WorkspaceMember {
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        WorkspaceRole @default(MEMBER)
+
+  @@id([workspaceId, userId])
+  @@index([userId])
+}
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+// Notes with nested structure
+model Note {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  parentId    String?
+  parent      Note? @relation("NoteHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Note[] @relation("NoteHierarchy")
+
+  title       String   @default("Untitled")
+  content     Json     @default("{}")  // TipTap JSON content
+  contentText String?  @db.Text        // Plain text for search
+  icon        String?                   // Emoji or icon identifier
+  coverUrl    String?                   // Cover image URL
+
+  createdById String
+  createdBy   User @relation(fields: [createdById], references: [id])
+
+  comments    Comment[]
+
+  // Document import tracking
+  importedFrom String?                  // Source filename
+  importedAt   DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([workspaceId])
+  @@index([parentId])
+  @@index([createdById])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  noteId    String
+  note      Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User @relation(fields: [userId], references: [id])
+
+  content   String   @db.Text
+  selection Json?                       // Text selection anchor
+  resolved  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([noteId])
+}
+
+// AI Conversations
+model Conversation {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+
+  title       String?
+
+  messages    Message[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([workspaceId])
+  @@index([userId])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  role           MessageRole
+  content        String   @db.Text
+  metadata       Json     @default("{}")  // Referenced notes, context
+
+  createdAt      DateTime @default(now())
+
+  @@index([conversationId])
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+// AI Memories - NO TRUST LEVELS (intentionally vulnerable)
+model Memory {
+  id          String   @id @default(cuid())
+  userId      String
+  workspaceId String
+
+  content     String   @db.Text
+  // Vector stored in Pinecone, not here
+
+  source      MemorySource
+  sourceId    String?                   // Reference to note/conversation
+
+  // Intentionally missing:
+  // - trustLevel (all memories equal)
+  // - userConfirmed (no verification)
+  // - expiresAt (permanent)
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([workspaceId])
+  @@index([source])
+}
+
+enum MemorySource {
+  CONVERSATION
+  DOCUMENT
+  NOTE
+  MANUAL
+}
