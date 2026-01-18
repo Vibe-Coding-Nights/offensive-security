@@ -62,7 +62,8 @@ npm run dev                # Start app
 hireflow/workshop/payloads/
 ├── 01-basic-override.txt      # "Ignore previous instructions..."
 ├── 02-role-injection.txt      # "VIP candidate from CEO..."
-└── 03-json-injection.txt      # Pre-formatted JSON response
+├── 03-json-injection.txt      # Few-shot example poisoning
+└── 04-stealth-injection.txt   # Hidden in "calibration data"
 ```
 
 ### Success Criteria
