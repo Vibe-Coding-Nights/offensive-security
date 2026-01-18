@@ -30,7 +30,7 @@ export const workspacesRouter = router({
   get: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -64,7 +64,7 @@ export const workspacesRouter = router({
   update: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
         name: z.string().min(1).max(100).optional(),
         settings: z.record(z.any()).optional(),
       })
@@ -85,7 +85,7 @@ export const workspacesRouter = router({
   delete: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -101,7 +101,7 @@ export const workspacesRouter = router({
   addMember: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
         email: z.string().email(),
         role: z.enum(['owner', 'admin', 'member', 'viewer']).default('member'),
       })
@@ -119,8 +119,8 @@ export const workspacesRouter = router({
   removeMember: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
-        userId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
+        userId: z.string().cuid(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -136,8 +136,8 @@ export const workspacesRouter = router({
   updateMemberRole: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
-        userId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
+        userId: z.string().cuid(),
         role: z.enum(['owner', 'admin', 'member', 'viewer']),
       })
     )

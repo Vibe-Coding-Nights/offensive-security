@@ -25,8 +25,8 @@ export const chatRouter = router({
   send: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
-        conversationId: z.string().uuid().optional(),
+        workspaceId: z.string().cuid(),
+        conversationId: z.string().cuid().optional(),
         message: z.string().min(1),
       })
     )
@@ -51,7 +51,7 @@ export const chatRouter = router({
   getConversation: protectedProcedure
     .input(
       z.object({
-        conversationId: z.string().uuid(),
+        conversationId: z.string().cuid(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -67,7 +67,7 @@ export const chatRouter = router({
   listConversations: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
         limit: z.number().min(1).max(100).default(20),
       })
     )
@@ -81,7 +81,7 @@ export const chatRouter = router({
   deleteConversation: protectedProcedure
     .input(
       z.object({
-        conversationId: z.string().uuid(),
+        conversationId: z.string().cuid(),
       })
     )
     .mutation(async ({ ctx, input }) => {

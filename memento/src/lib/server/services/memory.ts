@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { createId } from '@paralleldrive/cuid2';
 import { embed } from './embeddings';
 import { vectorDb } from '../vector-db';
 import { extractMemories } from '../ai';
@@ -46,8 +47,8 @@ export async function storeMemory(
   // Generate embedding for semantic search
   const embedding = await embed(content);
 
-  // Generate unique ID
-  const id = crypto.randomUUID();
+  // Generate unique ID (CUID to match Prisma schema)
+  const id = createId();
 
   // Store in vector database
   await vectorDb.upsert({

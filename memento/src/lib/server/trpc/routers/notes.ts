@@ -21,8 +21,8 @@ export const notesRouter = router({
   list: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
-        parentId: z.string().uuid().optional(),
+        workspaceId: z.string().cuid(),
+        parentId: z.string().cuid().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -35,7 +35,7 @@ export const notesRouter = router({
   get: protectedProcedure
     .input(
       z.object({
-        noteId: z.string().uuid(),
+        noteId: z.string().cuid(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -51,9 +51,9 @@ export const notesRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
         title: z.string().default('Untitled'),
-        parentId: z.string().uuid().optional(),
+        parentId: z.string().cuid().optional(),
         content: z.any().optional(),
       })
     )
@@ -73,7 +73,7 @@ export const notesRouter = router({
   update: protectedProcedure
     .input(
       z.object({
-        noteId: z.string().uuid(),
+        noteId: z.string().cuid(),
         title: z.string().optional(),
         content: z.any().optional(),
         icon: z.string().optional(),
@@ -96,7 +96,7 @@ export const notesRouter = router({
   delete: protectedProcedure
     .input(
       z.object({
-        noteId: z.string().uuid(),
+        noteId: z.string().cuid(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -112,7 +112,7 @@ export const notesRouter = router({
   search: protectedProcedure
     .input(
       z.object({
-        workspaceId: z.string().uuid(),
+        workspaceId: z.string().cuid(),
         query: z.string().min(1),
         limit: z.number().min(1).max(100).default(20),
       })
