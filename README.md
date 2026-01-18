@@ -86,7 +86,7 @@ pnpm dev
 ```
 
 ### Demo
-1. Open http://localhost:5173
+1. Open http://localhost:5174
 2. Login: `demo@memento.app` / `password123`
 3. Import: `workshop/payloads/01-basic-hidden-div.html`
 4. Check Memories page - hidden instruction appears

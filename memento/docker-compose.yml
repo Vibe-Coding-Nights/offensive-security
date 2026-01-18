@@ -1,4 +1,3 @@
-version: '3.9'
 
 services:
   postgres:
@@ -29,7 +28,7 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes
     ports:
-      - '6379:6379'
+      - '6380:6379'
     volumes:
       - redis_data:/data
     healthcheck:
